@@ -182,8 +182,9 @@ namespace EggAdmin
             Console.WriteLine("[2] - User Information");
             Console.WriteLine("[3] - Delete User");
             Console.WriteLine("[4] - Change User Rank");
+            Console.WriteLine("[5] - List All Panel Users");
             Console.WriteLine("");
-            Console.WriteLine("[5] - Back To Main Page");
+            Console.WriteLine("[6] - Back To Main Page");
             Console.WriteLine("");
             Console.WriteLine("Command:");
             string cmd = Console.ReadLine().ToString();
@@ -263,6 +264,10 @@ namespace EggAdmin
 
             }
             if (cmd == "5")
+            {
+                ListUsers();
+            }
+            if (cmd == "6")
             {
                 GenLogo();
             }
@@ -430,7 +435,7 @@ namespace EggAdmin
             Console.WriteLine("Amount of tokens:");
             int amount = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("");
-            Console.WriteLine("Level:");
+            Console.WriteLine("Level(Dont use 0 auth.gg is sped):");
             string level = Console.ReadLine();
             Console.WriteLine("");
             Console.WriteLine("Who is this for:");
@@ -510,7 +515,7 @@ namespace EggAdmin
                             File.AppendAllText(tokenOutPath + person + "_" + amount + "_" + days + "days.txt", "========================================================================================" + "\n");
                             File.AppendAllLines(tokenOutPath + person + "_" + amount + "_" + days + "days.txt", TokenList.Cast<string>().ToArray());
                         }
-                        Process.Start(@"C:\Users\Death\Desktop\Tokens\");
+                        Process.Start(@"C:\Users\" + Environment.UserName + "\\Desktop\\Tokens\\");
                         Console.Clear();
                         GenLogo();
                     }
@@ -815,6 +820,52 @@ namespace EggAdmin
             Console.WriteLine("");
             Console.WriteLine("");
             Console.WriteLine("All Panel Users");
+            Console.WriteLine("===============================");
+
+            if (status_t == "failed")
+            {
+                Console.WriteLine("\nInternal Error");
+                Console.ReadLine();
+            }
+            else if (status_t == "success")
+            {
+                for (int index = 0; index < amount; index++)
+                {
+                    dynamic goodshit = JsonConvert.DeserializeObject<dynamic>(allusers);
+                    string user = goodshit[index.ToString()]["username"].ToString();
+                    Console.WriteLine(user);
+
+                    if (index == amount - 1)
+                    {
+                        Console.Beep();
+                        Console.Beep();
+                        Console.WriteLine("");
+                        Console.WriteLine("");
+                        Console.WriteLine("[N] - New Session");
+
+                        string saving = Console.ReadLine();
+                        if (saving == "N" || saving == "n")
+                        {
+                            Console.Clear();
+                            GenLogo();
+                        }
+                    }
+                }
+            }
+        }
+
+        static void ListUsers()
+        {
+            WebClient eggclient = new WebClient();
+            string usercount = eggclient.DownloadString("https://developers.auth.gg/USERS/?type=count&authorization=" + API_key);
+            string allusers = eggclient.DownloadString("https://developers.auth.gg/USERS/?type=fetchall&authorization=" + API_key);
+            dynamic userc_out = JsonConvert.DeserializeObject<dynamic>(usercount);
+            int amount = userc_out["value"];
+            string status_t = userc_out["status"].ToString();
+
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("All Tool Users");
             Console.WriteLine("===============================");
 
             if (status_t == "failed")
